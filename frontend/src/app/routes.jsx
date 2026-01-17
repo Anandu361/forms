@@ -37,27 +37,21 @@ const AppRoutes = () => {
       <Route
         path="/forms/:id/edit"
         element={
-          <AppLayout>
             <FormBuilder />
-          </AppLayout>
         }
       />
 
       <Route
         path="/forms/:id/responses"
         element={
-          <AppLayout>
             <FormResponses />
-          </AppLayout>
         }
       />
 
       <Route
         path="/forms/:id/settings"
         element={
-          <AppLayout>
             <FormSettings />
-          </AppLayout>
         }
       />
 
