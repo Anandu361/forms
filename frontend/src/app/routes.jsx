@@ -1,11 +1,11 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 import Dashboard from "../pages/dashboard/Dashboard";
-import CreateForm from "../pages/form/CreateForm";
 import FormBuilder from "../pages/form/FormBuilder";
 import FormResponses from "../pages/form/FormResponses";
 import FormSettings from "../pages/form/FormSettings";
+import FormEditorContainer from "../pages/form/FormEditorContainer";
 import NotFound from "../pages/NotFound";
 import AppLayout from "../components/layout/AppLayout";
 
@@ -25,36 +25,16 @@ const AppRoutes = () => {
         }
       />
 
-      <Route
-        path="/forms/new"
-        element={
-          <AppLayout>
-            <CreateForm />
-          </AppLayout>
-        }
-      />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-      <Route
-        path="/forms/:id/edit"
-        element={
-            <FormBuilder />
-        }
-      />
-
-      <Route
-        path="/forms/:id/responses"
-        element={
-            <FormResponses />
-        }
-      />
-
-      <Route
-        path="/forms/:id/settings"
-        element={
-            <FormSettings />
-        }
-      />
-
+      {/* Form Editor Routes */}
+      <Route path="/forms/:id" element={<FormEditorContainer />}>
+        <Route path="edit" element={<FormBuilder />} />
+        <Route path="responses" element={<FormResponses />} />
+        <Route path="settings" element={<FormSettings />} />
+        {/* Redirect /forms/:id to /forms/:id/edit */}
+        <Route index element={<Navigate to="edit" replace />} />
+      </Route>
 
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -1,14 +1,12 @@
 import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
 
 const AppLayout = ({ children }) => {
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div className="h-screen flex flex-col overflow-hidden bg-white">
       <Navbar />
 
-      <div style={{ display: "flex", flex: 1 }}>
-        <Sidebar />
-        <main style={{ padding: "16px", flex: 1 }}>
+      <div className="flex flex-1 overflow-hidden">
+        <main className="flex-1 overflow-y-auto bg-gray-50">
           {children}
         </main>
       </div>
