@@ -8,23 +8,35 @@ function FormBuilder() {
   const [description, setDescription] = useState('');
   const [questions, setQuestions] = useState([
     {
-      id: '1',
-      type: 'multiple_choice',
-      title: 'Untitled Question',
-      options: ['Option 1'],
-      required: false,
-    }
+  id: Date.now().toString(),
+  type: 'single_select',   // rename type
+  label: 'Untitled Question',
+  options: ['Option 1'],
+  required: false,
+  validation: {},
+  rules: [],
+  ui: {
+    visible: true,
+    enabled: true
+  }
+}
   ]);
-  const [activeQuestionId, setActiveQuestionId] = useState('1');
+  const [activeQuestionId, setActiveQuestionId] = useState(questions[0].id);
 
   const addQuestion = () => {
     const newQuestion = {
       id: Date.now().toString(),
-      type: 'multiple_choice',
-      title: '',
+      type: 'single_select',
+      label: '',  
       options: ['Option 1'],
       required: false,
-    };
+      validation: {},
+      rules: [],
+      ui: {
+        visible: true,
+        enabled: true
+      }
+      };
     setQuestions([...questions, newQuestion]);
     setActiveQuestionId(newQuestion.id);
   };
