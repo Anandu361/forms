@@ -2,24 +2,45 @@ import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import QuestionCard from '../../components/form/QuestionCard';
 import FloatingToolbar from '../../components/form/FloatingToolbar';
+import useRuleEngine from '../../hooks/useRuleEngine';
 
 function FormBuilder() {
   const { title, setTitle } = useOutletContext();
   const [description, setDescription] = useState('');
+  const [answers, setAnswers] = useState({});
   const [questions, setQuestions] = useState([
     {
-  id: Date.now().toString(),
-  type: 'single_select',   // rename type
-  label: 'Untitled Question',
-  options: ['Option 1'],
-  required: false,
-  validation: {},
-  rules: [],
-  ui: {
-    visible: true,
-    enabled: true
-  }
-}
+      id: "q1",
+      type: "single_select",
+      label: "Question 1",
+      options: ["Option 1"],
+      required: false,
+      validation: {},
+      rules: [
+        {
+          if: {
+            questionId: "q1",
+            operator: "EQUALS",
+            value: "Option 1"
+          },
+          then: {
+            action: "HIDE",
+            targetQuestionId: "q2"
+          }
+        }
+      ],
+      ui: { visible: true, enabled: true }
+    },
+    {
+      id: "q2",
+      type: "single_select",
+      label: "Question 2",
+      options: ["Option 1"],
+      required: false,
+      validation: {},
+      rules: [],
+      ui: { visible: true, enabled: true }
+    }
   ]);
   const [activeQuestionId, setActiveQuestionId] = useState(questions[0].id);
 
@@ -27,7 +48,7 @@ function FormBuilder() {
     const newQuestion = {
       id: Date.now().toString(),
       type: 'single_select',
-      label: '',  
+      label: '',
       options: ['Option 1'],
       required: false,
       validation: {},
@@ -36,10 +57,16 @@ function FormBuilder() {
         visible: true,
         enabled: true
       }
-      };
+    };
     setQuestions([...questions, newQuestion]);
     setActiveQuestionId(newQuestion.id);
   };
+
+  const evaluatedQuestions = useRuleEngine(questions, answers);
+
+  console.log("QUESTIONS STATE:", questions);
+  console.log("EVALUATED QUESTIONS:", evaluatedQuestions);
+
 
   const updateQuestion = (id, updatedQuestion) => {
     setQuestions(questions.map(q => q.id === id ? updatedQuestion : q));
@@ -98,7 +125,7 @@ function FormBuilder() {
 
       {/* Questions List */}
       <div className="space-y-4">
-        {questions.map((q) => (
+        {evaluatedQuestions.map((q) => (
           <QuestionCard
             key={q.id}
             question={q}
@@ -107,6 +134,7 @@ function FormBuilder() {
             onDuplicate={duplicateQuestion}
             isActive={activeQuestionId === q.id}
             onClick={() => setActiveQuestionId(q.id)}
+            setAnswers={setAnswers}
           />
         ))}
       </div>
