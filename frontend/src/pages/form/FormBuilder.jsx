@@ -129,6 +129,7 @@ function FormBuilder() {
           <QuestionCard
             key={q.id}
             question={q}
+            questions={evaluatedQuestions}
             onUpdate={updateQuestion}
             onDelete={deleteQuestion}
             onDuplicate={duplicateQuestion}

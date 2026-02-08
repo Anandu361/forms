@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Trash2, Copy, MoreVertical, X, GripHorizontal } from 'lucide-react';
 import QuestionRenderer from '../../pages/form/QuestionRenderer'; 
+import RuleBuilder from './RuleBuilder';
+
+
 
 const QuestionTypes = [
   { value: 'short_text', label: 'Short answer' },
@@ -13,6 +16,7 @@ const QuestionTypes = [
 
 const QuestionCard = ({
   question,
+  questions, // for rules
   setAnswers,
   onUpdate,
   onDelete,
@@ -21,6 +25,7 @@ const QuestionCard = ({
   onClick,
 }) => {
 
+  const [showLogic, setShowLogic] = useState(false);
   if (!question.ui?.visible) return null;
   const handleChange = (field, value) => {
     onUpdate(question.id, { ...question, [field]: value });
@@ -75,6 +80,14 @@ const QuestionCard = ({
         {/* ✅ Renderer Preview Area */}
         <div className="mb-6">
           <QuestionRenderer question={question} setAnswers={setAnswers}/>
+          {showLogic && (
+        <RuleBuilder
+          rules={question.rules}
+          questions={questions}   // pass from FormBuilder later
+          onChange={(newRules) => handleChange("rules", newRules)}
+        />
+      )}
+
         </div>
 
         {/* Footer Actions */}
@@ -115,11 +128,15 @@ const QuestionCard = ({
           </div>
 
           <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowLogic(prev => !prev);
+            }}
             className="p-2 text-gray-500 hover:bg-gray-100 rounded-full"
-            title="More options"
           >
             <MoreVertical className="w-5 h-5" />
           </button>
+
         </div>
       </div>
     </div>
