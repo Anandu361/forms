@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Trash2, Copy, MoreVertical, X, GripHorizontal } from 'lucide-react';
 import QuestionRenderer from '../../pages/form/QuestionRenderer'; 
-import RuleBuilder from './RuleBuilder';
+
 
 
 
@@ -21,11 +21,11 @@ const QuestionCard = ({
   onUpdate,
   onDelete,
   onDuplicate,
+  onOpenLogic,
   isActive,
   onClick,
 }) => {
 
-  const [showLogic, setShowLogic] = useState(false);
   if (!question.ui?.visible) return null;
   const handleChange = (field, value) => {
     onUpdate(question.id, { ...question, [field]: value });
@@ -80,13 +80,6 @@ const QuestionCard = ({
         {/* ✅ Renderer Preview Area */}
         <div className="mb-6">
           <QuestionRenderer question={question} setAnswers={setAnswers}/>
-          {showLogic && (
-        <RuleBuilder
-          rules={question.rules}
-          questions={questions}   // pass from FormBuilder later
-          onChange={(newRules) => handleChange("rules", newRules)}
-        />
-      )}
 
         </div>
 
@@ -130,7 +123,7 @@ const QuestionCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setShowLogic(prev => !prev);
+              onOpenLogic(question.id);
             }}
             className="p-2 text-gray-500 hover:bg-gray-100 rounded-full"
           >

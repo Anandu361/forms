@@ -1,3 +1,25 @@
+function buildRulePreview(rule, questions) {
+
+  if (!rule?.if?.conditions?.length) return "";
+
+  const conditionText = rule.if.conditions.map(cond => {
+
+    const q = questions.find(x => x.id === cond.questionId);
+    const label = q?.label || cond.questionId;
+
+    return `${label} equals ${cond.value || "..."}`;
+  });
+
+  const logic = rule.if.logic || "AND";
+
+  const thenQ = questions.find(q => q.id === rule.then?.targetQuestionId);
+  const thenLabel = thenQ?.label || rule.then?.targetQuestionId;
+
+  return `IF ${conditionText.join(` ${logic} `)} → ${rule.then?.action || ""} ${thenLabel || ""}`;
+}
+
+
+
 function RuleBuilder({ rules = [], onChange, questions = [] }) {
 
   const addRule = () => {
@@ -177,6 +199,11 @@ function RuleBuilder({ rules = [], onChange, questions = [] }) {
                 <option key={q.id} value={q.id}>{q.label || q.id}</option>
               ))}
             </select>
+            
+            {/* 🔵 Live Rule Preview */}
+            <div className="w-full text-xs text-gray-500 mt-2 italic">
+              {buildRulePreview(rule, questions)}
+            </div>
 
           </div>
         );

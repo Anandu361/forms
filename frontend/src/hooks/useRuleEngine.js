@@ -29,25 +29,41 @@ function useRuleEngine(questions, answers) {
       const targetQuestion = findQuestion(targetId);
       if (!targetQuestion) return;
 
+
       // ⭐ CONDITION CHECK
-      let conditionPassed = true;
+    let conditionPassed = true;
 
-      if (rule.if) {
-        const { questionId, operator, value } = rule.if;
-        const answer = answers[questionId];
+    if (rule.if?.conditions?.length) {
 
-        // If unanswered → do NOT run rule
-        if (answer === undefined) conditionPassed = false;
+      const results = rule.if.conditions.map(cond => {
+        const answer = answers?.[cond.questionId];
 
-        if (operator === "EQUALS" && answer !== value) {
-          conditionPassed = false;
+        if (answer === undefined) return false;
+
+        if (cond.operator === "EQUALS") {
+          return answer === cond.value;
         }
+
+        return false;
+      });
+
+      const logic = rule.if.logic || "AND";
+
+      if (logic === "AND") {
+        conditionPassed = results.every(Boolean);
+      } else {
+        conditionPassed = results.some(Boolean);
       }
+    }
+
 
       // ⭐ APPLY ACTION ONLY IF TRUE
       if (conditionPassed) {
         if (action === "HIDE") {
           targetQuestion.ui.visible = false;
+        }
+        if (action === "DISABLE") {
+          targetQuestion.ui.enabled = false;
         }
       }
 

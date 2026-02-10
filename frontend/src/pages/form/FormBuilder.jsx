@@ -3,9 +3,11 @@ import { useOutletContext } from 'react-router-dom';
 import QuestionCard from '../../components/form/QuestionCard';
 import FloatingToolbar from '../../components/form/FloatingToolbar';
 import useRuleEngine from '../../hooks/useRuleEngine';
+import RuleBuilder from '../../components/form/RuleBuilder';
 
 function FormBuilder() {
   const { title, setTitle } = useOutletContext();
+  const [logicQuestionId, setLogicQuestionId] = useState(null);
   const [description, setDescription] = useState('');
   const [answers, setAnswers] = useState({});
   const [questions, setQuestions] = useState([
@@ -133,11 +135,30 @@ function FormBuilder() {
             onUpdate={updateQuestion}
             onDelete={deleteQuestion}
             onDuplicate={duplicateQuestion}
+            onOpenLogic={(id) => setLogicQuestionId(id)}
             isActive={activeQuestionId === q.id}
             onClick={() => setActiveQuestionId(q.id)}
             setAnswers={setAnswers}
           />
+          
         ))}
+        {logicQuestionId && (
+          <div className="fixed right-0 top-0 h-full w-96 bg-white border-l shadow-xl p-4 overflow-y-auto z-50">
+            <RuleBuilder
+              rules={questions.find(q => q.id === logicQuestionId)?.rules}
+              questions={questions}
+              onChange={(newRules) => {
+                setQuestions(prev =>
+                  prev.map(q =>
+                    q.id === logicQuestionId ? { ...q, rules: newRules } : q
+                  )
+                );
+              }}
+            />
+          </div>
+        )}
+
+        
       </div>
 
       {/* Floating Toolbar */}
