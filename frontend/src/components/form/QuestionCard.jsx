@@ -52,6 +52,12 @@ const QuestionCard = ({
         <div className="flex flex-col md:flex-row gap-4 mb-4">
           {/* Question Label */}
           <div className="flex-grow bg-gray-50 border-b border-gray-300 focus-within:border-blue-500 focus-within:bg-gray-100 transition-colors pt-2 px-2">
+            {question.ui?.controlledByLogic && (
+              <span className="text-xs text-blue-600 ml-2">
+                ⚡ Logic
+              </span>
+            )}
+
             <input
               type="text"
               value={question.label}

@@ -21,9 +21,14 @@ function FormBuilder() {
       rules: [
         {
           if: {
-            questionId: "q1",
-            operator: "EQUALS",
-            value: "Option 1"
+            logic: "AND",
+            conditions: [
+              {
+                questionId: "q1",
+                operator: "EQUALS",
+                value: "Option 1"
+              }
+            ]
           },
           then: {
             action: "HIDE",
@@ -97,6 +102,8 @@ function FormBuilder() {
     }
   };
 
+  const logicQuestion = questions.find(q => q.id === logicQuestionId);
+
   return (
     <div className='max-w-3xl mx-auto mt-6 relative pl-4 pr-16 sm:px-0 pb-20'>
       {/* Form Header Card */}
@@ -142,19 +149,40 @@ function FormBuilder() {
           />
           
         ))}
-        {logicQuestionId && (
+        {logicQuestionId && logicQuestion && (
           <div className="fixed right-0 top-0 h-full w-96 bg-white border-l shadow-xl p-4 overflow-y-auto z-50">
+
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="font-semibold">Logic</h2>
+                <p className="text-xs text-gray-500">
+                  For: {logicQuestion.label || "This question"}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setLogicQuestionId(null)}
+                className="text-gray-500 hover:text-black"
+              >
+                ✕
+              </button>
+            </div>
+
             <RuleBuilder
-              rules={questions.find(q => q.id === logicQuestionId)?.rules}
+              rules={logicQuestion.rules || []}
               questions={questions}
+              sourceQuestion={logicQuestion}
               onChange={(newRules) => {
                 setQuestions(prev =>
                   prev.map(q =>
-                    q.id === logicQuestionId ? { ...q, rules: newRules } : q
+                    q.id === logicQuestionId
+                      ? { ...q, rules: newRules }
+                      : q
                   )
                 );
               }}
             />
+
           </div>
         )}
 
